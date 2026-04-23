@@ -1,0 +1,1118 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Umbrella.Utilities</name>
+    </assembly>
+    <members>
+        <member name="T:Umbrella.Utilities.Caching.Abstractions.IMultiCache">
+            <summary>
+            A multi cache that allows cache items to be stored in an <see cref="T:Microsoft.Extensions.Caching.Memory.IMemoryCache"/> or a <see cref="T:Microsoft.Extensions.Caching.Distributed.IDistributedCache"/> implementation.
+            The cache includes the option to allow internal errors that occur when adding or retrieving items to be masked.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Caching.IDistributedCacheExtensions">
+            <summary>
+            A set of extension methods for <see cref="T:Microsoft.Extensions.Caching.Distributed.IDistributedCache"/> instances to bring things more into line
+            with those available for the <see cref="T:Microsoft.Extensions.Caching.Memory.IMemoryCache"/>.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.IDistributedCacheExtensions.GetOrCreateString(Microsoft.Extensions.Caching.Distributed.IDistributedCache,System.String,System.Func{System.String},System.Func{Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions},System.Boolean)">
+            <summary>
+            Gets the string from the cache using the specified <paramref name="key"/> or creates the specified string value using the provided <paramref name="factory"/> delegate if
+            it is not present in the cache.
+            </summary>
+            <param name="cache">The cache.</param>
+            <param name="key">The key.</param>
+            <param name="factory">The factory.</param>
+            <param name="optionsBuilder">The options builder.</param>
+            <param name="throwOnCacheFailure">
+            <para>Specifies whether or not to throw an exception if the operation to get or set the cache item in the underlying cache fails.</para>
+            <para>Setting this as false means that the failure is handled silently allowing the new cache item to be built with any cache failures being masked.
+            Any exceptions are then returned by the method as an <see cref="T:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException"/> which has an inner exception of type <see cref="T:System.AggregateException"/> to be handled manually by the caller.
+            </para>
+            </param>
+            <returns>The string that has either been retrieved or added to the cache together with any exception information</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="cache"/>, <paramref name="key"/>,<paramref name="factory"/> or <paramref name="optionsBuilder"/> are null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the <paramref name="key"/> is either an empty string or whitespace.</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.IDistributedCacheExtensions.GetOrCreateStringAsync(Microsoft.Extensions.Caching.Distributed.IDistributedCache,System.String,System.Func{System.Threading.Tasks.Task{System.String}},System.Func{Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions},System.Threading.CancellationToken,System.Boolean)">
+            <summary>
+            Gets the string from the cache using the specified <paramref name="key"/> or creates the specified string value using the provided <paramref name="factory"/> delegate if
+            it is not present in the cache.
+            </summary>
+            <param name="cache">The cache.</param>
+            <param name="key">The key.</param>
+            <param name="factory">The factory.</param>
+            <param name="optionsBuilder">The options builder.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/>.</param>
+            <param name="throwOnCacheFailure">
+            <para>Specifies whether or not to throw an exception if the operation to get or set the cache item in the underlying cache fails.</para>
+            <para>Setting this as false means that the failure is handled silently allowing the new cache item to be built with any cache failures being masked.
+            Any exceptions are then returned by the method as an <see cref="T:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException"/> which has an inner exception of type <see cref="T:System.AggregateException"/> to be handled manually by the caller.
+            </para>
+            </param>
+            <returns>The string that has either been retrieved or added to the cache together with any exception information</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="cache"/>, <paramref name="key"/>,<paramref name="factory"/> or <paramref name="optionsBuilder"/> are null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the <paramref name="key"/> is either an empty string or whitespace.</exception>
+        </member>
+        <member name="T:Umbrella.Utilities.Caching.MultiCache">
+            <summary>
+            A multi cache that allows cache items to be stored in an <see cref="T:Microsoft.Extensions.Caching.Memory.IMemoryCache"/> or a <see cref="T:Microsoft.Extensions.Caching.Distributed.IDistributedCache"/> implementation.
+            The cache includes the option to allow internal errors that occur when adding or retrieving items to be masked.
+            </summary>
+            <seealso cref="T:Umbrella.Utilities.Caching.Abstractions.IMultiCache" />
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.MultiCache.GetAllMemoryCacheMetaEntries">
+            <summary>
+            Gets all memory cache meta entries.
+            </summary>
+            <returns>A collection of <see cref="T:Umbrella.Utilities.Caching.MultiCacheMetaEntry"/> instances.</returns>
+            <exception cref="T:Umbrella.Utilities.Caching.MultiCacheException">
+            Meta entries cannot be retrieved when analytics is disabled.
+            or
+            There has been a problem reading the memory cache keys.
+            </exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.MultiCache.RemoveAsync``1(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Removes the item with the specified <paramref name="cacheKey"/> from the cache.
+            </summary>
+            <typeparam name="T">The type of the cached item.</typeparam>
+            <param name="cacheKey">The cache key.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>A task which can be awaited to indicate completion.</returns>
+            <exception cref="T:Umbrella.Utilities.Caching.MultiCacheException">There has been a problem removing the item with the key: " + <paramref name="cacheKey"/></exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.MultiCache.ClearMemoryCache">
+            <summary>
+            Clears the memory cache.
+            </summary>
+            <exception cref="T:Umbrella.Utilities.Caching.MultiCacheException">There was a problem clearing all items from the memory cache.</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.MultiCache.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.MultiCache.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException">
+            <summary>
+            Represents errors that occur during operations on an <see cref="T:Microsoft.Extensions.Caching.Distributed.IDistributedCache"/> instance during the execution of a method that is part
+            of the <see cref="T:Umbrella.Utilities.Caching.IDistributedCacheExtensions"/> type.
+            </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException"/> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Caching.UmbrellaDistributedCacheException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Comparers.GenericComparer`2.#ctor(System.Func{`0,`1},System.Func{`0,`0,System.Int32})">
+            <summary>
+            Create a new instance of the comparer using the specified delegate to select the value used to check
+            for object instance equality. If a custom comparer is specified then that will be used instead with the property
+            selector only being used to determine the HashCode for an object instance.
+            <para>
+            If a custom comparer is not specified then equality will be determined by trying to get values from each object using the <paramref name="propertySelector"/> and comparing those.
+            </para>
+            </summary>
+            <param name="propertySelector">The property selector delegate.</param>
+            <param name="customComparer">An optional delegate for custom comparison instead of using the <paramref name="propertySelector"/> if possible.</param>
+        </member>
+        <member name="T:Umbrella.Utilities.Comparers.GenericEqualityComparer`2">
+            <summary>
+            A generic comparer to allow for determining equality between 2 object instances
+            of the same type.
+            </summary>
+            <typeparam name="TObject">The type of the object instances to compare.</typeparam>
+            <typeparam name="TProperty">The type of the property used for comparison.</typeparam>
+        </member>
+        <member name="M:Umbrella.Utilities.Comparers.GenericEqualityComparer`2.#ctor(System.Func{`0,`1},System.Func{`0,`0,System.Boolean})">
+            <summary>
+            Create a new instance of the comparer using the specified delegate to select the value used to check
+            for object instance equality. If a custom comparer is specified then that will be used instead with the property
+            selector only being used to determine the HashCode for an object instance.
+            <para>
+            If a custom comparer is not specified then equality will be determined by trying to get values from each object using the <paramref name="propertySelector"/> and comparing those.
+            </para>
+            </summary>
+            <param name="propertySelector">The property selector delegate.</param>
+            <param name="customComparer">An optional delegate for custom comparison instead of using the <paramref name="propertySelector"/> if possible.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Comparers.GenericEqualityComparer`2.Equals(`0,`0)">
+            <summary>
+            Determines if the 2 provided object instances are equal.
+            </summary>
+            <param name="x">The first object instance.</param>
+            <param name="y">The second object instance.</param>
+            <returns>Whether or not the 2 object instances are equal.</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Comparers.GenericEqualityComparer`2.GetHashCode(`0)">
+            <summary>
+            Computes the hash code for the specified object instance. Internally this calls GetHashCode on the value that
+            is returned by the propertySelector delegate supplied in the constructor.
+            </summary>
+            <param name="obj">The object instance to compute the hash code for.</param>
+            <returns>The hash code</returns>
+        </member>
+        <member name="T:Umbrella.Utilities.Compilation.DebugUtility">
+            <summary>
+            This is an internal class used only for the purposes of debugging the library projects. Exposing this for use outside
+            of these projects would be pointless once the libraries have been compiled in release mode.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Configuration.ReadOnlyAppSettingsBase">
+            <summary>
+            The base class for an AppSettings class that contains property definitions for settings that are read from the appSettings section
+            of the application config file, e.g. app.config, web.config.
+            </summary>
+            <seealso cref="T:Umbrella.Utilities.Configuration.ReadOnlyAppSettingsBase`1"/>
+        </member>
+        <member name="T:Umbrella.Utilities.Configuration.ReadOnlyAppSettingsBase`1">
+            <summary>
+            The base class for an AppSettings class that contains property definitions for settings that are read from
+            </summary>
+            <typeparam name="TAppSettingsSource">The type of the application settings source.</typeparam>
+            <seealso cref="T:Umbrella.Utilities.Configuration.IReadOnlyAppSettingsSource"/>
+        </member>
+        <member name="T:Umbrella.Utilities.DependencyInjection.LazyProxy`1">
+            <summary>
+            An extension of the Lazy class indended to support allowing Lazy types
+            to be injected into constructors. Look at <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions"/> to see it's service registration.
+            </summary>
+            <typeparam name="T">The type that Lazy wraps around.</typeparam>
+            <seealso cref="T:System.Lazy`1" />
+        </member>
+        <member name="T:Umbrella.Utilities.Email.Abstractions.IEmailSender">
+            <summary>
+            A service used to send emails.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Email.Abstractions.IEmailSender.SendEmailAsync(System.String,System.String,System.String,System.Threading.CancellationToken,System.String)">
+            <summary>
+            Sends the email to the specified email address.
+            </summary>
+            <param name="email">The email address.</param>
+            <param name="subject">The subject of the email.</param>
+            <param name="body">The body of the email.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="fromAddress">The email address of the sender. If this is not specified, the default email address will be automatically set to the default value <see cref="P:Umbrella.Utilities.Email.Options.EmailSenderOptions.DefaultFromAddress"/>.</param>
+            <returns>An awaitable task which will complete when the email has been sent.</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Email.EmailBuilder.UsingTemplate(System.String,System.Boolean)">
+            <summary>
+            Specify either an email template filename, or supply a raw html string to use instead
+            </summary>
+            <param name="source">The source template file or raw html to use</param>
+            <param name="isRawHtml">Indicates whether the source is a file or raw html</param>
+        </member>
+        <member name="T:Umbrella.Utilities.Email.EmailSender">
+            <summary>
+            An implementation of the <see cref="T:Umbrella.Utilities.Email.Abstractions.IEmailSender" /> abstraction that either sends emails
+            using a configured SMTP server or saves them to a folder on disk as .eml files. Configuration is specified using
+            the singleton <see cref="T:Umbrella.Utilities.Email.Options.EmailSenderOptions" /> configured with the application's DI container.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Email.EmailSender.#ctor(Microsoft.Extensions.Logging.ILogger{Umbrella.Utilities.Email.EmailSender},Umbrella.Utilities.Email.Options.EmailSenderOptions)">
+            <summary>
+            Create a new instance.
+            </summary>
+            <param name="logger">The logger.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Email.EmailSender.SendEmailAsync(System.String,System.String,System.String,System.Threading.CancellationToken,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbrella.Utilities.Email.Options.EmailSenderOptions">
+            <summary>
+            The options for the <see cref="T:Umbrella.Utilities.Email.EmailSender"/>.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Email.Options.EmailSenderOptions.DeliveryMethod">
+            <summary>
+            The method of delivery. Defaults to <see cref="F:System.Net.Mail.SmtpDeliveryMethod.Network" />.
+            <see cref="F:System.Net.Mail.SmtpDeliveryMethod.PickupDirectoryFromIis" /> is not supported.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Email.Options.EmailSenderOptions.DefaultFromAddress">
+            <summary>
+            The default sender address.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Email.Options.EmailSenderOptions.PickupDirectoryLocation">
+            <summary>
+            The path to the folder on disk where emails will be saved when <see cref="P:Umbrella.Utilities.Email.Options.EmailSenderOptions.DeliveryMethod"/> is set
+            to <see cref="F:System.Net.Mail.SmtpDeliveryMethod.SpecifiedPickupDirectory"/>.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Email.Options.EmailSenderOptions.Host">
+            <summary>
+            The address of the SMTP server.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Email.Options.EmailSenderOptions.Port">
+            <summary>
+            The port used to connect to the SMTP server. Defaults to 25.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Email.Options.EmailSenderOptions.UserName">
+            <summary>
+            The username used to connect to the SMTP server.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Email.Options.EmailSenderOptions.Password">
+            <summary>
+            The password used to connect to the SMTP server.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Email.Options.EmailSenderOptions.SecureServerConnection">
+            <summary>
+            Specifies whether or not the SMTP server connection is secured. Defaults to <see langword="false" />.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Encryption.Abstractions.INonceGenerator">
+            <summary>
+            Generates cryptographically strong nonces.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.Abstractions.INonceGenerator.Generate(System.Int32)">
+            <summary>
+            Generates a nonce encoded as a base64 string according to the specified length in bytes.
+            </summary>
+            <param name="lengthInBytes">The length in bytes.</param>
+            <returns>A base64 encoded string.</returns>
+        </member>
+        <member name="T:Umbrella.Utilities.Encryption.AesEncryptionUtility">
+            <summary>
+            Utility to provide string encryption capabilities
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.AesEncryptionUtility.#ctor(Microsoft.Extensions.Logging.ILogger{Umbrella.Utilities.Encryption.AesEncryptionUtility})">
+            <summary>
+            Constructor with values for the Key and IV.
+            </summary>
+            <param name="encryptionKey">The encryption key to use</param>
+            <param name="initializationVector">The initialization vector to use</param>
+        </member>
+        <member name="T:Umbrella.Utilities.Encryption.CertificateUtility">
+            <summary>
+            Utility class to find X509Certificate2 and export them into byte arrays
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.CertificateUtility.FindCertificateByThumbprint(System.Security.Cryptography.X509Certificates.StoreName,System.Security.Cryptography.X509Certificates.StoreLocation,System.String,System.Boolean)">
+            <summary>
+            Finds the cert having thumbprint supplied from store location supplied
+            </summary>
+            <param name="storeName"></param>
+            <param name="storeLocation"></param>
+            <param name="thumbprint"></param>
+            <param name="validationRequired"></param>
+            <returns>X509Certificate2</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.CertificateUtility.FindCertificateByThumbprint(System.String,System.Boolean)">
+             <summary>
+            Finds the cert having thumbprint supplied defaulting to the personal store of currrent user. 
+             </summary>
+             <param name="thumbprint"></param>
+             <param name="validateCertificate"></param>
+             <returns>X509Certificate2</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.CertificateUtility.ExportCertificateWithPrivateKey(System.Security.Cryptography.X509Certificates.X509Certificate2,System.String@)">
+             <summary>
+             Exports the cert supplied into a byte arrays and secures it with a randomly generated password. 
+            </summary>
+             <param name="cert"></param>
+             <param name="password"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.EncryptionUtility`1.Initialize(System.String,System.String)">
+            <summary>
+            Initializes the encryption utility with values for the Key and IV.
+            </summary>
+            <param name="encryptionKey">The encryption key to use</param>
+            <param name="initializationVector">The initialization vector to use</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.EncryptionUtility`1.EncryptString(System.String)">
+            <summary>
+            Method to encrypt a given string.
+            </summary>
+            <param name="value">The string to encrypt.</param>
+            <returns>The encryption result.</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.EncryptionUtility`1.DecryptString(System.String)">
+            <summary>
+            Method to decrypt a given byte array.
+            </summary>
+            <param name="value">The byte array to decrypt.</param>
+            <returns>The decryption result.</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.EncryptionUtility`1.Dispose">
+            <summary>
+            Disposes of the current instance
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.EncryptionUtility`1.Dispose(System.Boolean)">
+            <summary>
+            Disposes of the resources used by this instance.
+            </summary>
+            <param name="disposing">A flag used to determine if this method has been called from the IDisposable.Dispose method.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.EncryptionUtility`1.ConvertStringToByteArray(System.String)">
+            <summary>
+            Method to convert a string to a unicode byte array.
+            </summary>
+            <param name="str">The string to convert.</param>
+            <returns>The converted byte array.</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.EncryptionUtility`1.ConvertByteArrayToString(System.Byte[])">
+            <summary>
+            Method to convert a byte array to a unicode string.
+            </summary>
+            <param name="bytes">The byte array to convert.</param>
+            <returns>The converted string.</returns>
+        </member>
+        <member name="T:Umbrella.Utilities.Encryption.NonceGenerator">
+            <summary>
+            Generates cryptographically strong nonces.
+            </summary>
+            <seealso cref="T:Umbrella.Utilities.Encryption.Abstractions.INonceGenerator" />
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.NonceGenerator.#ctor(Microsoft.Extensions.Logging.ILogger{Umbrella.Utilities.Encryption.NonceGenerator})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Encryption.NonceGenerator"/> class.
+            </summary>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.NonceGenerator.Generate(System.Int32)">
+            <summary>
+            Generates a nonce encoded as a base64 string according to the specified length in bytes.
+            </summary>
+            <param name="lengthInBytes">The length in bytes.</param>
+            <returns>A base64 encoded string.</returns>
+            <exception cref="T:Umbrella.Utilities.Exceptions.UmbrellaException">An error has occurred whilst generating the nonce of {lengthInBytes}</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.NonceGenerator.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.NonceGenerator.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Encryption.TripleDESEncryptionUtility">
+            <summary>
+            Utility to provide string encryption capabilities
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Encryption.TripleDESEncryptionUtility.#ctor(Microsoft.Extensions.Logging.ILogger{Umbrella.Utilities.Encryption.TripleDESEncryptionUtility})">
+            <summary>
+            Constructor with values for the Key and IV.
+            </summary>
+            <param name="encryptionKey">The encryption key to use</param>
+            <param name="initializationVector">The initialization vector to use</param>
+        </member>
+        <member name="T:Umbrella.Utilities.Exceptions.UmbrellaException">
+            <summary>
+            Represents a generic exception thrown from a class in one of the Umbrella libraries. This class serves as the base exception
+            for more specific Umbrella exceptions thrown from other Umbrella libraries.
+            </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Umbrella.Utilities.Exceptions.UmbrellaException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Exceptions.UmbrellaException"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Exceptions.UmbrellaException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Exceptions.UmbrellaException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Exceptions.UmbrellaException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Exceptions.UmbrellaException"/> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Exceptions.UmbrellaException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Exceptions.UmbrellaException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="T:Umbrella.Utilities.Extensions.DateTimeExtensions">
+            <summary>
+            Contains useful DateTime extension methods
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.DateTimeExtensions.ToTimeSinceString(System.DateTime,System.String,System.Nullable{System.DateTime})">
+            <summary>
+            Returns a string representation of the time between the date and the current DateTime according to the following:
+            1) Under 1 minute - "Just now"
+            2) Under 1 hour - "xx minute(s) ago"
+            3) Under 1 day - "xx hour(s) ago"
+            4) Under 7 days - "xx day(s) ago"
+            5) >= 7 days - the date according to the specified format
+            </summary>
+            <param name="date">The date being dealt with.</param>
+            <param name="format">The format for a DateTime value to be returned in. Defaults to a short date string.</param>
+            <param name="dtComparison">Allows a reference value to be passed. By default this method use DateTime.Now for comparison.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Umbrella.Utilities.Extensions.EnumExtensions">
+            <summary>
+            A set of extension methods for <see cref="T:System.Enum"/> types.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Extensions.HashSetExtensions">
+            <summary>
+            A set of extension methods for the <see cref="T:System.Collections.Generic.HashSet`1"/> type.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.HashSetExtensions.AddNotNull``1(System.Collections.Generic.HashSet{``0},``0)">
+            <summary>
+            Adds a value to the specified <see cref="T:System.Collections.Generic.HashSet`1"/> only if it is not null.
+            </summary>
+            <typeparam name="T">The type of elements in the <see cref="T:System.Collections.Generic.HashSet`1"/>.</typeparam>
+            <param name="hashSet">The <see cref="T:System.Collections.Generic.HashSet`1"/> to which the <paramref name="value"/> will be added.</param>
+            <param name="value">The value to be added to the <see cref="T:System.Collections.Generic.HashSet`1"/>.</param>
+            <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.HashSetExtensions.AddNotNullTrim(System.Collections.Generic.HashSet{System.String},System.String)">
+            <summary>
+            Adds a string value to the specified <see cref="T:System.Collections.Generic.HashSet`1"/> only if it is not null.
+            In doing so, the string is also trimmed.
+            </summary>
+            <typeparam name="T">The type of elements in the <see cref="T:System.Collections.Generic.HashSet`1"/>.</typeparam>
+            <param name="hashSet">The <see cref="T:System.Collections.Generic.HashSet`1"/> to which the <paramref name="value"/> will be added.</param>
+            <param name="value">The value to be added to the <see cref="T:System.Collections.Generic.HashSet`1"/>.</param>
+            <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.HashSetExtensions.AddNotNullTrimToLowerInvariant(System.Collections.Generic.HashSet{System.String},System.String)">
+            <summary>
+            Adds a string value to the specified <see cref="T:System.Collections.Generic.HashSet`1"/> only if it is not null.
+            In doing do, the string value is trimmed and converted to lowercase using the rules of the invariant culture.
+            </summary>
+            <typeparam name="T">The type of elements in the <see cref="T:System.Collections.Generic.HashSet`1"/>.</typeparam>
+            <param name="hashSet">The <see cref="T:System.Collections.Generic.HashSet`1"/> to which the <paramref name="value"/> will be added.</param>
+            <param name="value">The value to be added to the <see cref="T:System.Collections.Generic.HashSet`1"/>.</param>
+            <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
+        </member>
+        <member name="T:Umbrella.Utilities.Extensions.IDbConnectionExtensions">
+            <summary>
+            Extension methods for <see cref="T:System.Data.IDbConnection"/> instances.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.IDbConnectionExtensions.EnsureOpened(System.Data.IDbConnection)">
+            <summary>
+            Ensures the provided database connection is open.
+            </summary>
+            <param name="dbConnection">The database connection.</param>
+            <returns>The database connection.</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.IEnumerableExtensions.Split``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Splits a collection into groups
+            </summary>
+            <typeparam name="T">The type of the source collection</typeparam>
+            <param name="source">The collection to be split into groups</param>
+            <param name="itemsPerGroup">The number of items per group</param>
+            <returns>A nested collection split into groups</returns>
+        </member>
+        <member name="T:Umbrella.Utilities.Extensions.SortDirectionExtensions">
+            <summary>
+            Extension methods for the <see cref="T:Umbrella.Utilities.Sorting.SortDirection"/> enum.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.SortDirectionExtensions.ToSqlSortDirection(Umbrella.Utilities.Sorting.SortDirection)">
+            <summary>
+            Converts the provided <see cref="T:Umbrella.Utilities.Sorting.SortDirection"/> to the corresponding SQL sort direction, i.e. ASC or DESC
+            </summary>
+            <param name="sortDirection">The sort direction.</param>
+            <returns>A string of the corresponding SQL sort direction.</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.StringBuilderExtensions.IndexOf(System.Text.StringBuilder,System.Char)">
+            <summary>
+            Get index of a char
+            </summary>
+            <param name="sb"></param>
+            <param name="c"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.StringBuilderExtensions.IndexOf(System.Text.StringBuilder,System.Char,System.Int32)">
+            <summary>
+            Get index of a char starting from a given index
+            </summary>
+            <param name="sb"></param>
+            <param name="c"></param>
+            <param name="startIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.StringBuilderExtensions.IndexOf(System.Text.StringBuilder,System.String)">
+            <summary>
+            Get index of a string
+            </summary>
+            <param name="sb"></param>
+            <param name="text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.StringBuilderExtensions.IndexOf(System.Text.StringBuilder,System.String,System.Int32)">
+            <summary>
+            Get index of a string from a given index
+            </summary>
+            <param name="sb"></param>
+            <param name="text"></param>
+            <param name="startIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.StringBuilderExtensions.IndexOf(System.Text.StringBuilder,System.String,System.Boolean)">
+            <summary>
+            Get index of a string with case option
+            </summary>
+            <param name="sb"></param>
+            <param name="text"></param>
+            <param name="ignoreCase"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.StringBuilderExtensions.IndexOf(System.Text.StringBuilder,System.String,System.Int32,System.Boolean)">
+            <summary>
+            Get index of a string from a given index with case option
+            </summary>
+            <param name="sb"></param>
+            <param name="text"></param>
+            <param name="startIndex"></param>
+            <param name="ignoreCase"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.StringExtensions.Contains(System.String,System.String,System.StringComparison)">
+            <summary>
+            Returns a value indicating whether a specified substring occurs within this string.
+            </summary>
+            <param name="target">The string to check.</param>
+            <param name="value">The string to seek.</param>
+            <param name="comparisonType">The type of <see cref="T:System.StringComparison"/> to use to locate the <paramref name="value"/> in the <paramref name="target"/>.</param>
+            <returns>true if the value parameter occurs within this string, otherwise, false.</returns>
+        </member>
+        <member name="M:Umbrella.Utilities.Extensions.StringExtensions.ToPersonNameCase(System.String)">
+            <summary>
+            Attempts to convert the name of a person into some kind of normalized format
+            where the name is not presently in a reasonable format, e.g. riCHARd would be better transformed
+            into Richard. This method only deals with the simplest of cases currently.
+            </summary>
+            <param name="name">The name.</param>
+            <returns>The normalized name</returns>
+        </member>
+        <member name="T:Umbrella.Utilities.FriendlyUrl.FriendlyUrlGenerator">
+            <summary>
+            See: https://www.johanbostrom.se/blog/how-to-create-a-url-and-seo-friendly-string-in-csharp-text-to-slug-generator
+            </summary>
+            <seealso cref="T:Umbrella.Utilities.FriendlyUrl.IFriendlyUrlGenerator" />
+        </member>
+        <member name="T:Umbrella.Utilities.FriendlyUrl.IFriendlyUrlGenerator">
+            <summary>
+            A utility for generating friendly URLs.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.FriendlyUrl.IFriendlyUrlGenerator.GenerateUrl(System.String,System.Int32)">
+            <summary>
+            Generates a friendly URL segment.
+            </summary>
+            <param name="text">The text to use to generate the URL segment.</param>
+            <param name="maxLength">The maximum length of the genrated URL segment.</param>
+            <returns>The URL segment.</returns>
+        </member>
+        <member name="T:Umbrella.Utilities.Guard">
+            <summary>
+            A static helper class that includes various parameter checking routines.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Guard.ArgumentNotNull``1(``0,System.String)">
+            <summary>
+            Throws <see cref="T:System.ArgumentNullException"/> if the given argument is null.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The value is null.</exception>
+            <param name="argumentValue">The argument value to test.</param>
+            <param name="argumentName">The name of the argument to test.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Guard.ArgumentNotNullOrEmpty(System.String,System.String)">
+            <summary>
+            Throws an exception if the tested string argument is null, or an empty string.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The string value is null.</exception>
+            <exception cref="T:System.ArgumentException">The string is empty.</exception>
+            <param name="argumentValue">The argument value to test.</param>
+            <param name="argumentName">The name of the argument to test.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Guard.ArgumentNotNullOrWhiteSpace(System.String,System.String)">
+            <summary>
+            Throws an exception if the tested string argument is null, whitespace, or an empty string.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The string value is null.</exception>
+            <exception cref="T:System.ArgumentException">The string is empty or only whitespace.</exception>
+            <param name="argumentValue">The argument value to test.</param>
+            <param name="argumentName">The name of the argument to test.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Guard.ArgumentNotNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+            Throws an exception if the tested <see cref="T:System.Collections.Generic.IEnumerable`1"/> argument is null or empty.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> is empty.</exception>
+            <param name="argumentValue">The argument value to test.</param>
+            <param name="argumentName">The name of the argument to test.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Guard.ArgumentOfType``1(System.Object,System.String,System.String)">
+            <summary>
+            Checks if the <paramref name="argumentValue"/> is of type <typeparamref name="T"/> or a type in it's type hierarchy.
+            Calls <see cref="M:Umbrella.Utilities.Guard.ArgumentNotNull``1(``0,System.String)"/> internally.
+            </summary>
+            <typeparam name="T">The type to match.</typeparam>
+            <param name="argumentValue">The object to test.</param>
+            <param name="argumentName">The name of the argument.</param>
+            <param name="customMessage">A custom message which is appended to the default error message.</param>
+            <exception cref="T:System.ArgumentNullException">The value is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">The value is not of type <typeparamref name="T"/> or a type in it's type hierarchy.</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Guard.ArgumentOfTypeExact``1(System.Object,System.String,System.String)">
+            <summary>
+            Checks if the <paramref name="argumentValue"/> is axactly of type <typeparamref name="T"/>
+            Calls <see cref="M:Umbrella.Utilities.Guard.ArgumentNotNull``1(``0,System.String)"/> internally.
+            </summary>
+            <typeparam name="T">The type to match.</typeparam>
+            <param name="argumentValue">The object to test.</param>
+            <param name="argumentName">The name of the argument.</param>
+            <param name="customMessage">A custom message which is appended to the default error message.</param>
+            <exception cref="T:System.ArgumentNullException">The value is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">The value is not exactly of type <typeparamref name="T"/></exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Guard.ArgumentLengthInRange(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Checks if a string is between a minimum and maximum length.
+            </summary>
+            <param name="argumentValue">The argument value.</param>
+            <param name="argumentName">Name of the argument.</param>
+            <param name="minLength">The optional minimum length.</param>
+            <param name="maxLength">The optional maximum length.</param>
+            <exception cref="T:System.ArgumentNullException">The argument is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The string must have a minimum length of {minLength}
+            or
+            The string must have a maximum length of {maxLength}
+            </exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Guard.ArgumentInRange``1(``0,System.String,System.Nullable{``0},System.Nullable{``0})">
+            <summary>
+            Checks if a value is within a specified range.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="argumentValue">The argument value.</param>
+            <param name="argumentName">Name of the argument.</param>
+            <param name="min">The minimum.</param>
+            <param name="max">The maximum.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The value must be greater than or equal to {min}
+            or
+            The value must be less than or equal to {max}
+            </exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Guard.ArgumentInRange``1(System.Nullable{``0},System.String,System.Nullable{``0},System.Nullable{``0},System.Boolean)">
+            <summary>
+            Checks if a value is within a specified range.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="argumentValue">The argument value.</param>
+            <param name="argumentName">Name of the argument.</param>
+            <param name="min">The minimum.</param>
+            <param name="max">The maximum.</param>
+            <param name="allowNull">if set to <c>true</c> [allow null].</param>
+            <exception cref="T:System.ArgumentNullException">The argument value provided cannot be null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The value must be greater than or equal to {min}
+            or
+            The value must be less than or equal to {max}
+            </exception>
+        </member>
+        <member name="T:Umbrella.Utilities.Http.HttpResourceInfo">
+            <summary>
+            Represents basic metadata of an HTTP resource.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Http.HttpResourceInfo.ContentType">
+            <summary>
+            Gets or sets the type of the content.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Http.HttpResourceInfo.ContentLength">
+            <summary>
+            Gets or sets the length of the content.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Http.HttpResourceInfo.LastModified">
+            <summary>
+            Gets or sets the last modified date.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Http.HttpResourceInfo.Url">
+            <summary>
+            Gets or sets the URL.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Http.HttpResourceInfoUtility">
+            <summary>
+            A utility class used to get basic details of a resource on a URL.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Http.HttpResourceInfoUtility.#ctor(Microsoft.Extensions.Logging.ILogger{Umbrella.Utilities.Http.HttpResourceInfoUtility},Umbrella.Utilities.Caching.Abstractions.IMultiCache,Umbrella.Utilities.Caching.Abstractions.ICacheKeyUtility,Umbrella.Utilities.Http.HttpResourceInfoUtilityOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Http.HttpResourceInfoUtility"/> class.
+            </summary>
+            <param name="logger">The logger.</param>
+            <param name="multiCache">The multi cache.</param>
+            <param name="cacheKeyUtility">The cache key utility.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Http.HttpResourceInfoUtility.GetAsync(System.String,System.Threading.CancellationToken,System.Boolean)">
+            <summary>
+            Gets the <see cref="T:Umbrella.Utilities.Http.HttpResourceInfo"/> for the specified <paramref name="url"/>. Returns null where the resource cannot be found.
+            </summary>
+            <param name="url">The URL.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="useCache">if set to  [use cache].</param>
+            <returns></returns>
+            <exception cref="T:Umbrella.Utilities.Exceptions.UmbrellaException">There was a problem retrieving data for the specified url: {url}</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Http.HttpResourceInfoUtility.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Http.HttpResourceInfoUtility.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Http.HttpResourceInfoUtilityOptions">
+            <summary>
+            The options for the <see cref="T:Umbrella.Utilities.Http.HttpResourceInfoUtility" /> class, typically registered with DI as a singleton.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Http.HttpResourceInfoUtilityOptions.CacheEnabled">
+            <summary>
+            Gets or sets a value indicating whether caching is enabled. This will override any caching parameters
+            on methods of the <see cref="T:Umbrella.Utilities.Http.HttpResourceInfoUtility"/> class. Defaults to <see langword="true" />.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Http.HttpResourceInfoUtilityOptions.CacheTimeout">
+            <summary>
+            Gets or sets the cache timeout. Defaults to 1 hour.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Http.HttpResourceInfoUtilityOptions.CacheSlidingExpiration">
+            <summary>
+            Gets or sets a value indicating whether sliding expiration is enabled. Defaults to <see langword="true" />.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Http.HttpResourceInfoUtilityOptions.UseMemoryCache">
+            <summary>
+            Gets or sets a value indicating whether or not to cache items in memory or use whatever the chosen distributed
+            caching mechanism is for the application. Defaults to <see langword="true" />.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Http.IHttpResourceInfoUtility">
+            <summary>
+            A utility class used to get basic details of a resource on a URL.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Http.IHttpResourceInfoUtility.GetAsync(System.String,System.Threading.CancellationToken,System.Boolean)">
+            <summary>
+            Gets the <see cref="T:Umbrella.Utilities.Http.HttpResourceInfo"/> for the specified <paramref name="url"/>. Returns null where the resource cannot be found.
+            </summary>
+            <param name="url">The URL.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="useCache">if set to  [use cache].</param>
+            <returns></returns>
+            <exception cref="T:Umbrella.Utilities.Exceptions.UmbrellaException">There was a problem retrieving data for the specified url: {url}</exception>
+        </member>
+        <member name="T:Umbrella.Utilities.Json.UmbrellaJsonTypeNameHandling">
+            <summary>
+            Specifies Type Name handling options when serializing / deserializing objects. This enum has been lifted from
+            the Newtonsoft.Json code and is here as part of the abstraction efforts to avoid a hard dependency on Newtonsoft.Json.
+            </summary>
+        </member>
+        <member name="F:Umbrella.Utilities.Json.UmbrellaJsonTypeNameHandling.None">
+            <summary>
+            Do not include the .NET type name when serializing types.
+            </summary>
+        </member>
+        <member name="F:Umbrella.Utilities.Json.UmbrellaJsonTypeNameHandling.Objects">
+            <summary>
+            Include the .NET type name when serializing into a JSON object structure.
+            </summary>
+        </member>
+        <member name="F:Umbrella.Utilities.Json.UmbrellaJsonTypeNameHandling.Arrays">
+            <summary>
+            Include the .NET type name when serializing into a JSON array structure.
+            </summary>
+        </member>
+        <member name="F:Umbrella.Utilities.Json.UmbrellaJsonTypeNameHandling.All">
+            <summary>
+            Always include the .NET type name when serializing.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Mime.IMimeTypeUtility">
+            <summary>
+            A utility to lookup MIME Types.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Mime.IMimeTypeUtility.GetMimeType(System.String)">
+            <summary>
+            Gets the MIME Type of the specified filename or extension.
+            If the extension cannot be identified then the default type of application/octet-stream will be returned.
+            </summary>
+            <param name="fileNameOrExtension">The file name or extension.</param>
+        </member>
+        <member name="T:Umbrella.Utilities.Mime.MimeTypeUtility">
+            <summary>
+            A utility to lookup MIME Types.
+            </summary>
+            <seealso cref="T:Umbrella.Utilities.Mime.IMimeTypeUtility" />
+        </member>
+        <member name="M:Umbrella.Utilities.Mime.MimeTypeUtility.GetMimeType(System.String)">
+            <summary>
+            Gets the MIME Type of the specified filename or extension.
+            If the extension cannot be identified then the default type of application/octet-stream will be returned.
+            </summary>
+            <param name="fileNameOrExtension">The file name or extension.</param>
+        </member>
+        <member name="T:Umbrella.Utilities.Numerics.Abstractions.IConcurrentRandomGenerator">
+            <summary>
+            A thread-safe wrapper around the <see cref="T:System.Random"/> type.
+            </summary>
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.Abstractions.IConcurrentRandomGenerator.GenerateDistinctCollection(System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Generates a unique collection of integers based on the specified <paramref name="min"/> and <paramref name="max"/> values with a size specified by the value of <paramref name="count"/>.
+            </summary>
+            <param name="min">The inclusive lower bound of the the random numbers returned.</param>
+            <param name="max">The exclusive upper bound of the random numbers returned. <paramref name="max"/> must be greater than or equal to <paramref name="min"/>.</param>
+            <param name="count">The size of the generated collection.</param>
+            <param name="shuffle">Determines whether or not the returned collection will be randomly shuffled.</param>
+            <returns>A collection containing the random numbers.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown if either parameter value is less than zero, or if <paramref name="max"/> is less than <paramref name="min"/>.
+            Also conditionally thrown, when <paramref name="max"/> is greater than <paramref name="min"/>, if the <paramref name="count"/>
+            is less than one or is greater than the difference between <paramref name="min"/> and <paramref name="max"/> such that it will be
+            impossible to generate a collection of the size of the specified <paramref name="count"/> value.
+            </exception>
+            <exception cref="T:Umbrella.Utilities.Exceptions.UmbrellaException">An error has occurred while generating the collection.</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.Abstractions.IConcurrentRandomGenerator.Next(System.Int32,System.Int32)">
+            <summary>
+            Gets the next random number based on the specified <paramref name="min"/> and <paramref name="max"/> values.
+            </summary>
+            <param name="min">The inclusive lower bound of the random number returned.</param>
+            <param name="max">The exclusive upper bound of the random number returned. <paramref name="max"/> must be greater than or equal to <paramref name="min"/>.</param>
+            <returns>
+            A 32-bit signed integer greater than or equal to <paramref name="min"/> and less than <paramref name="max"/>;
+            that is, the range of return values includes <paramref name="min"/> but not <paramref name="max"/>. If <paramref name="min"/>
+            equals <paramref name="max"/>, <paramref name="min"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if either parameter value is less than zero, or if <paramref name="max"/> is less than <paramref name="min"/>.</exception>
+            <exception cref="T:Umbrella.Utilities.Exceptions.UmbrellaException">An error has occurred while generating the random number.</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.Abstractions.IConcurrentRandomGenerator.Next">
+            <summary>
+            Returns a non-negative random integer.
+            </summary>
+            <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="F:System.Int32.MaxValue"/>.</returns>
+            <exception cref="T:Umbrella.Utilities.Exceptions.UmbrellaException">An error has occurred while generating the random number.</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.Abstractions.IConcurrentRandomGenerator.TakeRandom``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Boolean)">
+            <summary>
+            Returns a specified number of random elements from a sequence.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source">The sequence to return elements from.</param>
+            <param name="count">The number of elements to return.</param>
+            <param name="shuffle">Determines whether or not the returned sequence will be randomly shuffled.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that contains the specified number of elements randomly selected from the sequence.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is less than one.</exception>
+        </member>
+        <member name="T:Umbrella.Utilities.Numerics.ConcurrentRandomGenerator">
+            <summary>
+            A thread-safe wrapper around the <see cref="T:System.Random"/> type for generating pseudo-random numbers.
+            </summary>
+            <seealso cref="T:Umbrella.Utilities.Numerics.Abstractions.IConcurrentRandomGenerator" />
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.ConcurrentRandomGenerator.#ctor(Microsoft.Extensions.Logging.ILogger{Umbrella.Utilities.Numerics.ConcurrentRandomGenerator})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbrella.Utilities.Numerics.ConcurrentRandomGenerator"/> class.
+            </summary>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.ConcurrentRandomGenerator.Next">
+            <summary>
+            Returns a non-negative random integer.
+            </summary>
+            <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="F:System.Int32.MaxValue"/>.</returns>
+            <exception cref="T:Umbrella.Utilities.Exceptions.UmbrellaException">An error has occurred while generating the random number.</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.ConcurrentRandomGenerator.Next(System.Int32,System.Int32)">
+            <summary>
+            Gets the next random number based on the specified <paramref name="min"/> and <paramref name="max"/> values.
+            </summary>
+            <param name="min">The inclusive lower bound of the random number returned.</param>
+            <param name="max">The exclusive upper bound of the random number returned. <paramref name="max"/> must be greater than or equal to <paramref name="min"/>.</param>
+            <returns>
+            A 32-bit signed integer greater than or equal to <paramref name="min"/> and less than <paramref name="max"/>;
+            that is, the range of return values includes <paramref name="min"/> but not <paramref name="max"/>. If <paramref name="min"/>
+            equals <paramref name="max"/>, <paramref name="min"/> is returned.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if either parameter value is less than zero, or if <paramref name="max"/> is less than <paramref name="min"/>.</exception>
+            <exception cref="T:Umbrella.Utilities.Exceptions.UmbrellaException">An error has occurred while generating the random number.</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.ConcurrentRandomGenerator.GenerateDistinctCollection(System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Generates a unique collection of integers based on the specified <paramref name="min"/> and <paramref name="max"/> values with a size specified by the value of <paramref name="count"/>.
+            </summary>
+            <param name="min">The inclusive lower bound of the the random numbers returned.</param>
+            <param name="max">The exclusive upper bound of the random numbers returned. <paramref name="max"/> must be greater than or equal to <paramref name="min"/>.</param>
+            <param name="count">The size of the generated collection.</param>
+            <param name="shuffle">Determines whether or not the returned collection will be randomly shuffled.</param>
+            <returns>A collection containing the random numbers.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            Thrown if either parameter value is less than zero, or if <paramref name="max"/> is less than <paramref name="min"/>.
+            Also conditionally thrown, when <paramref name="max"/> is greater than <paramref name="min"/>, if the <paramref name="count"/>
+            is less than one or is greater than the difference between <paramref name="min"/> and <paramref name="max"/> such that it will be
+            impossible to generate a collection of the size of the specified <paramref name="count"/> value.
+            </exception>
+            <exception cref="T:Umbrella.Utilities.Exceptions.UmbrellaException">An error has occurred while generating the collection.</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.ConcurrentRandomGenerator.TakeRandom``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Boolean)">
+            <summary>
+            Returns a specified number of random elements from a sequence.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source">The sequence to return elements from.</param>
+            <param name="count">The number of elements to return.</param>
+            <param name="shuffle">Determines whether or not the returned sequence will be randomly shuffled.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that contains the specified number of elements randomly selected from the sequence.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is less than one.</exception>
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.ConcurrentRandomGenerator.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Umbrella.Utilities.Numerics.ConcurrentRandomGenerator.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Sorting.SortDirection">
+            <summary>
+            Used to specify the sort direction for a list of items. This exists to avoid using the SortDirection enum from the System.Web namespaces
+            which isn't available in .NET Core.
+            </summary>
+        </member>
+        <member name="F:Umbrella.Utilities.Sorting.SortDirection.Ascending">
+            <summary>
+            Sort in ascending order.
+            </summary>
+        </member>
+        <member name="F:Umbrella.Utilities.Sorting.SortDirection.Descending">
+            <summary>
+            Sort in descending order.
+            </summary>
+        </member>
+        <member name="T:Umbrella.Utilities.Sorting.SortExpressionDescriptor">
+            <summary>
+            Used to describe a sorting rule. One intended usage of this is for when an API controller
+            receives data from a client about how data should be sorted and a JSON representation of this is
+            deserialized to an instance of this type. The web projects contain model binders for performing custom
+            JSON deserialization to this type.
+            </summary>
+        </member>
+        <member name="P:Umbrella.Utilities.Sorting.SortExpressionDescriptor.MemberName">
+            <summary>
+            Gets or sets the name of the member.
+            </summary>
+            <value>
+            The name of the member.
+            </value>
+        </member>
+        <member name="P:Umbrella.Utilities.Sorting.SortExpressionDescriptor.Direction">
+            <summary>
+            Gets or sets the <see cref="T:Umbrella.Utilities.Sorting.SortDirection"/>.
+            </summary>
+            <value>
+            The <see cref="T:Umbrella.Utilities.Sorting.SortDirection"/>.
+            </value>
+        </member>
+        <member name="T:Microsoft.Extensions.Logging.ILoggerExtensions">
+            <summary>
+            A set of extension methods for <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instances which provide more comprehensive logging functionality than the built-in <see cref="M:Microsoft.Extensions.Logging.ILogger.Log``1(Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.EventId,``0,System.Exception,System.Func{``0,System.Exception,System.String})"/>
+            method and the Log* extension methods provided by Microsoft.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
+            <summary>
+            Extension methods used to register services for the Umbrella.Utilities package with a specified
+            <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> dependency injection container builder.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddUmbrellaUtilities(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{System.IServiceProvider,Umbrella.Utilities.Email.Options.EmailSenderOptions})">
+            <summary>
+            Adds the Umbrella.Utilities services to the specified <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> dependency injection container builder.
+            </summary>
+            <param name="services">The services dependency injection container builder to which the services will be added.</param>
+            <returns>The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> dependency injection container builder.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.ConfigureMultiCacheOptions(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{System.IServiceProvider,Umbrella.Utilities.Caching.Options.MultiCacheOptions})">
+            <summary>
+            Configures the <see cref="T:Umbrella.Utilities.Caching.Options.MultiCacheOptions"/> for use with the <see cref="T:Umbrella.Utilities.Caching.MultiCache"/>.
+            </summary>
+            <param name="services">The services dependency injection container builder to which the services will be added.</param>
+            <returns>The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> dependency injection container builder.</returns>
+            <param name="optionsBuilder">An optional delegate used to build the <see cref="T:Umbrella.Utilities.Caching.Options.MultiCacheOptions"/>.</param>
+            <returns>The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> dependency injection container builder.</returns>
+            /// <exception cref="T:System.ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+        </member>
+    </members>
+</doc>
